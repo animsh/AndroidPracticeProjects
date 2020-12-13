@@ -10,6 +10,7 @@ import com.animsh.trivia.controller.AppController;
 import com.animsh.trivia.model.Question;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,22 @@ public class QuestionBank {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("JSON ARRAY: ", "onResponse: " + response);
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                // add data to question object
+                                Question question = new Question();
+                                question.setAnswer(response.getJSONArray(i).get(0).toString());
+                                question.setAnswerTrue(response.getJSONArray(i).getBoolean(1));
+
+                                // add question to list
+                                questionArrayList.add(question);
+
+                                //Log.d("JSON QUESTION: ", "onResponse: " + response.getJSONArray(i).get(0));
+                                //Log.d("JSON ANSWER: ", "onResponse: " + response.getJSONArray(i).getBoolean(1));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -37,6 +54,6 @@ public class QuestionBank {
                     }
                 });
         AppController.getInstance().addToRequestQueue(jsonArrayRequest);
-        return null;
+        return questionArrayList;
     }
 }
