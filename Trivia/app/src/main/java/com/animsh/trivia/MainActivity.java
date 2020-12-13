@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 questionList = questionArrayList;
                 Log.d("ASYNC TASK: ", "processFinished: " + questionArrayList);
                 String question = "Q. " + questionArrayList.get(currentQuestionIndex).getAnswer();
+                String counter = currentQuestionIndex + " / " + questionArrayList.size();
+                counterTV.setText(counter);
                 questionTV.setText(question);
             }
         });
@@ -57,20 +60,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.prev_btn:
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex = (currentQuestionIndex - 1) % questionList.size();
+                    updateQuestion();
+                }
                 break;
             case R.id.next_btn:
                 currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
                 updateQuestion();
                 break;
             case R.id.true_btn:
+                checkAnswer(true);
                 break;
             case R.id.false_btn:
+                checkAnswer(false);
                 break;
         }
     }
 
+    private void checkAnswer(boolean userChoice) {
+        boolean answerIsTrue = questionList.get(currentQuestionIndex).isAnswerTrue();
+        int toastMessageId = 0;
+        if (userChoice == answerIsTrue) {
+            toastMessageId = R.string.correct_answer;
+        } else {
+            toastMessageId = R.string.wrong_answer;
+        }
+        Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
+    }
+
     private void updateQuestion() {
         String question = "Q. " + questionList.get(currentQuestionIndex).getAnswer();
+        String counter = currentQuestionIndex + " / " + questionList.size();
+        counterTV.setText(counter);
         questionTV.setText(question);
     }
 }
