@@ -3,12 +3,15 @@ package com.animsh.trivia;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.animsh.trivia.data.AnswerListAsyncResponse;
 import com.animsh.trivia.data.QuestionBank;
@@ -71,9 +74,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.true_btn:
                 checkAnswer(true);
+                updateQuestion();
                 break;
             case R.id.false_btn:
                 checkAnswer(false);
+                updateQuestion();
                 break;
         }
     }
@@ -84,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (userChoice == answerIsTrue) {
             toastMessageId = R.string.correct_answer;
         } else {
+            shakeAnimation();
             toastMessageId = R.string.wrong_answer;
         }
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
@@ -94,5 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String counter = currentQuestionIndex + " / " + questionList.size();
         counterTV.setText(counter);
         questionTV.setText(question);
+    }
+
+    private void shakeAnimation() {
+        Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
+        CardView cardView = findViewById(R.id.cardView);
+        cardView.setAnimation(shake);
     }
 }
