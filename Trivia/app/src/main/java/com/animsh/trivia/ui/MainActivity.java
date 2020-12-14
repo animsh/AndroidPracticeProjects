@@ -1,6 +1,5 @@
-package com.animsh.trivia;
+package com.animsh.trivia.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +14,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.animsh.trivia.R;
 import com.animsh.trivia.data.AnswerListAsyncResponse;
 import com.animsh.trivia.data.QuestionBank;
 import com.animsh.trivia.model.Question;
+import com.animsh.trivia.model.Score;
+import com.animsh.trivia.utils.Prefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int currentQuestionIndex = 0;
     public List<Question> questionList;
 
+    private int scoreCounter = 0;
+    private Score score;
+    private TextView scoreTV, highScoreTV;
+    public Prefs prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //Initialization
+        score = new Score();
+        scoreTV = findViewById(R.id.score_tv);
+        highScoreTV = findViewById(R.id.highest_score_tv);
+        prefs = new Prefs(MainActivity.this);
         questionTV = findViewById(R.id.question_tv);
         counterTV = findViewById(R.id.counter_tv);
         trueBtn = findViewById(R.id.true_btn);
@@ -47,6 +58,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         prevBtn.setOnClickListener(this);
         trueBtn.setOnClickListener(this);
         falseBtn.setOnClickListener(this);
+
+        currentQuestionIndex = prefs.getState();
+        scoreCounter = prefs.getCurrentScore();
+
+        String scoreText = "Current Score: " + scoreCounter;
+        scoreTV.setText(scoreText);
+
+        String highScoreText = "High Score: " + prefs.getHighPoints();
+        highScoreTV.setText(highScoreText);
 
         new QuestionBank().getQuestions(new AnswerListAsyncResponse() {
             @Override
@@ -90,12 +110,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int toastMessageId = 0;
         if (userChoice == answerIsTrue) {
             fadeView();
+            addPoints();
             toastMessageId = R.string.correct_answer;
         } else {
             shakeAnimation();
+            deductPoints();
             toastMessageId = R.string.wrong_answer;
         }
+        String scoreText = "Current Score: " + scoreCounter;
+        scoreTV.setText(scoreText);
         Toast.makeText(this, toastMessageId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void addPoints() {
+        scoreCounter += 100;
+        score.setScore(scoreCounter);
+        prefs.saveHighPoints(scoreCounter);
+        Log.d("PREFS: ", "addPoints: " + prefs.getHighPoints());
+        Log.d("SCORE +: ", "addPoints: " + scoreCounter);
+    }
+
+    private void deductPoints() {
+        scoreCounter -= 100;
+        if (scoreCounter <= 0) {
+            scoreCounter = 0;
+        }
+        score.setScore(scoreCounter);
+        Log.d("SCORE -: ", "deductPoints: " + scoreCounter);
     }
 
     private void updateQuestion() {
@@ -118,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animation animation) {
                 cardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
+                updateQuestion();
             }
 
             @Override
@@ -127,9 +170,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void fadeView(){
+    private void fadeView() {
         final CardView cardView = findViewById(R.id.cardView);
-        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f,0.0f);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
         alphaAnimation.setDuration(300);
         alphaAnimation.setRepeatCount(1);
         alphaAnimation.setRepeatMode(Animation.REVERSE);
@@ -144,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animation animation) {
                 cardView.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                currentQuestionIndex = (currentQuestionIndex + 1) % questionList.size();
+                updateQuestion();
             }
 
             @Override
@@ -151,5 +196,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        prefs.saveHighPoints(scoreCounter);
+        prefs.saveState(currentQuestionIndex);
+        prefs.saveCurrentScore(scoreCounter);
     }
 }
