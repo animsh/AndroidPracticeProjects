@@ -1,4 +1,4 @@
-package com.animsh.parsing;
+package com.animsh.respocetojsonfile;
 
 import org.junit.Test;
 
