@@ -32,11 +32,12 @@ import retrofit2.Retrofit;
 public class JsonUtil implements Serializable {
     private static final String JSON_TAG = "JSON_WRITE";
     private static final String FILE_NAME = "POKEFILE.json";
-    private static String BASE_URL = "https://pokeapi.co/api/v2/";
+
 
     public static String toJSon(PokemonList pokemonCollection, Context context) throws IOException {
         // Here we convert Java Object to JSON
         JSONObject jsonTypes = new JSONObject();
+        String BASE_URL = "https://pokeapi.co/api/v2/";
         Retrofit retrofit = NetworkUtils.getClient(BASE_URL);
         ApiCalls apiCalls = retrofit.create(ApiCalls.class);
         PokemonList list = pokemonCollection;
@@ -45,7 +46,7 @@ public class JsonUtil implements Serializable {
         List<Pokemon> pokemonList = list.getResults();
         for (int i = 0; i < count; i++) {
             JSONArray jsonArr = new JSONArray();
-            idParser = pokemonList.get(i).getUrl().trim().split("\\/");
+            idParser = pokemonList.get(i).getUrl().trim().split("/");
             Call<PokemonDetails> typeCall = apiCalls.getPokemonType(Integer.parseInt(idParser[idParser.length - 1]));
             String[] finalIdParser = idParser;
             typeCall.enqueue(new Callback<PokemonDetails>() {
@@ -82,7 +83,6 @@ public class JsonUtil implements Serializable {
 
                 @Override
                 public void onFailure(Call<PokemonDetails> call, Throwable t) {
-                    Log.e(JSON_TAG, "onFailure: " + t.getMessage());
                 }
             });
         }

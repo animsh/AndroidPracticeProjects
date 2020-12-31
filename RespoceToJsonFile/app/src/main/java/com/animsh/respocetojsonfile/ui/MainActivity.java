@@ -20,14 +20,14 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static String BASE_URL = "https://pokeapi.co/api/v2/";
-    private String RESPONSE_TAG = "RESPONSE";
+    private final String RESPONSE_TAG = "RESPONSE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String BASE_URL = "https://pokeapi.co/api/v2/";
         Retrofit retrofit = NetworkUtils.getClient(BASE_URL);
         ApiCalls apiCalls = retrofit.create(ApiCalls.class);
         Call<PokemonList> listCall = apiCalls.getPokemonList(1118, 0);
