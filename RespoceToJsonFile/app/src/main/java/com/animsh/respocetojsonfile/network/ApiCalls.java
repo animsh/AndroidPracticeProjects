@@ -1,7 +1,7 @@
 package com.animsh.respocetojsonfile.network;
 
-import com.animsh.respocetojsonfile.model.PokemonDetails;
-import com.animsh.respocetojsonfile.model.PokemonList;
+import com.animsh.respocetojsonfile.models.PokemonDetails;
+import com.animsh.respocetojsonfile.models.PokemonList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

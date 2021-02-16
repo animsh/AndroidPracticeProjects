@@ -14,15 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
-    ListView listView;
     String TAG = "JSON_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = (ListView) findViewById(R.id.listView);
-
         try {
             JSONObject object = new JSONObject(readJSON());
             for (int i = 1; i < 800; i++) {
@@ -42,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // to read json files from assets folder
     public String readJSON() {
         String json = null;
         try {

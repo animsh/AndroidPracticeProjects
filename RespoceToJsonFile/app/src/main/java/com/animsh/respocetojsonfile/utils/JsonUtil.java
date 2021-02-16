@@ -1,12 +1,11 @@
 package com.animsh.respocetojsonfile.utils;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.animsh.respocetojsonfile.model.Pokemon;
-import com.animsh.respocetojsonfile.model.PokemonDetails;
-import com.animsh.respocetojsonfile.model.PokemonList;
-import com.animsh.respocetojsonfile.model.PokemonType;
+import com.animsh.respocetojsonfile.models.Pokemon;
+import com.animsh.respocetojsonfile.models.PokemonDetails;
+import com.animsh.respocetojsonfile.models.PokemonList;
+import com.animsh.respocetojsonfile.models.PokemonType;
 import com.animsh.respocetojsonfile.network.ApiCalls;
 import com.animsh.respocetojsonfile.network.NetworkUtils;
 

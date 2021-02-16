@@ -6,7 +6,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.animsh.respocetojsonfile.R;
-import com.animsh.respocetojsonfile.model.PokemonList;
+import com.animsh.respocetojsonfile.models.PokemonList;
 import com.animsh.respocetojsonfile.network.ApiCalls;
 import com.animsh.respocetojsonfile.network.NetworkUtils;
 import com.animsh.respocetojsonfile.utils.JsonUtil;

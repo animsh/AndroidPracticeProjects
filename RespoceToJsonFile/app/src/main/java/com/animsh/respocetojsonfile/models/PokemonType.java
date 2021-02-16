@@ -1,4 +1,4 @@
-package com.animsh.respocetojsonfile.model;
+package com.animsh.respocetojsonfile.models;
 
 import java.io.Serializable;
 
